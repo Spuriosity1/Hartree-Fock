@@ -2,11 +2,16 @@
 #include <string>
 #include <math.h>
 #include <assert.h>
+#include <stdlib.h>
 
-
-#include "moleculeio.h"
+#include "molecule.h"
 #include "Eigen/Eigenvalues"
 
+class HFsolver {
+public:
+    Molecule molecule;
+    void solve();
+}
 
 // CALL SEQUENCE
 // HFsolve input_file.dat
@@ -18,6 +23,9 @@ int main(int argc, char const *argv[]) {
         cerr << FORMAT_SPECIFICATION <<endl;
         exit(EXIT_FAILURE);
     }
+    string path(argv[1]);
+    Molecule M(path);
+    M.print();
 
     return 0;
 }
