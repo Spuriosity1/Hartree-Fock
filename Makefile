@@ -4,7 +4,7 @@ CC := g++
 
 SRCDIR := src
 BUILDDIR := build
-TARGET := bin/solver
+TARGET := bin/HFsolve
 
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
