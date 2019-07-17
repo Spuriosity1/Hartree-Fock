@@ -1,4 +1,4 @@
-#include "molecule.h"
+#include "molecule.hpp"
 
 Molecule::Molecule(){
     for (size_t i = 0; i < NELEM; i++) {
@@ -34,7 +34,7 @@ void Molecule::print(){
     }
 }
 
-void save_as(const string &filename){
+void Molecule::save_as(const string &filename){
     ofstream outdata;
     outdata.open(filename);
     for (uint Z = 0; Z < NELEM; Z++) {
@@ -71,7 +71,7 @@ void Molecule::import_from(const string &path){
         lineno++;
 
         #ifdef DEBUG
-        printf("line %u\n",lineno);
+        printf("DEBUG: line %u\n",lineno);
         #endif
 
         if (line[0] == '#'){
@@ -85,23 +85,7 @@ void Molecule::import_from(const string &path){
             Zval = stoi(line.substr(2));
         } else {
             // Assume we are reading 3 coordinates
-            stringstream lineStream(line);
-            string cell;
-
-            uint pos=0;
-            vector3_t R;
-
-            while (getline(lineStream, cell, ' ')) {
-                if (pos < 3){
-                    R.vals[pos] = stod(cell);
-                    ++pos;
-                } else {
-                    // Ignore any superfluous data
-                    fprintf(stderr, "Found extra data at line %u\n", lineno);
-                }
-            }
-
-            values.push_back(R);
+            values.push_back(read_vector3(line));
             nempty = true;
         }
     }
@@ -109,6 +93,28 @@ void Molecule::import_from(const string &path){
     if (nempty){
         store_vector(Zval,values);
     }
+}
+
+
+// Reads 3 Euclidean coords like 1 2 -0.222e-4 from a std::string line
+vector3_t read_vector3(string line){
+    stringstream lineStream(line);
+    string cell;
+
+    uint pos=0;
+    vector3_t R;
+
+    while (getline(lineStream, cell, ' ')) {
+        if (pos < 3){
+            R.vals[pos] = stod(cell);
+            ++pos;
+        } else {
+            // Ignore any superfluous data
+            fprintf(stderr, "Found extra data at line %u\n", lineno);
+        }
+    }
+
+    return R;
 }
 
 
