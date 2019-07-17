@@ -34,17 +34,34 @@ void Molecule::print(){
     }
 }
 
+void save_as(const string &filename){
+    ofstream outdata;
+    outdata.open(filename);
+    for (uint Z = 0; Z < NELEM; Z++) {
+        if (len[Z] != 0){
+            outdata<<"Z:"<<Z<<endl;
+        }
+        for (uint mZ = 0; mZ < len[Z]; mZ++) {
+            double* R = nuclei[Z]+3*mZ;
+            outdata<<R[0]<<" "<<R[1]<<" "<<R[2]<<endl;
+        }
+    }
+    outdata.close();
+}
+
+
 // Do this the old fashioned way
 // This is quite possibly some of the worst code ever written
 void Molecule::import_from(const string &path){
     ifstream indata;
-    indata.open(path, ifstream::in);
+    indata.open(path);
     string line;
     uint lineno = 0;
 
     nuclei = (double **) malloc(sizeof(double *) * NELEM);
     memset(nuclei, (int) NULL, NELEM);
 
+    nelectrons = 0;
     // Structure:
     // nuclei[Z][idx][x,y,z]
     vector<vector3_t> values;
@@ -63,6 +80,7 @@ void Molecule::import_from(const string &path){
         } else if (line[0] == 'Z'){
             // New Z value
             store_vector(Zval,values);
+            nelectrons += Zval*values.size();
             values.clear();
             Zval = stoi(line.substr(2));
         } else {

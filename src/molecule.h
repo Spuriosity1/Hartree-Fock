@@ -1,4 +1,4 @@
-\#ifndef HF_MOLECULE_H
+#ifndef HF_MOLECULE_H
 #define HF_MOLECULE_H
 
 #include <string>
@@ -34,6 +34,7 @@ public:
     void import_from(const string &filename);
     void print();
     uint nelectrons;
+    void save_as(const string &filename);
 private:
     void store_vector(uint Z, vector<vector3_t> v);
 protected:
