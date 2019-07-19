@@ -20,17 +20,9 @@ N.B. K is an operator, not a number in the above expression!
 
 
 
-HartreeFockSolver::HartreeFockSolver (const std::vector<scalarfield_t> &phi){
-
-}
-
-void HartreeFockSolver::compute_S(){
-
-}
-
-void HartreeFockSolver::compute_F(){
-
-}
+// HartreeFockSolver::HartreeFockSolver (const std::vector<scalarfield_t> &phi){
+//
+// }
 
 
 // void HartreeFockSolver::solve(const MatrixXd&phi , const Ref<const ArrayXXd> U){

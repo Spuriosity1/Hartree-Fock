@@ -6,6 +6,9 @@
 // This class contains all of the electronic information involved in the molecular solution
 // We will employ the predetermined sets of Gaussian-type orbitals for computational efficiency.
 
+#include <Eigen/Dense>
+#include "nuclei.hpp"
+
 // R(r) = sum_s=0^M d_s exp(-alpha_s r^2)$$
 typedef struct{
     double d[GTO_EXPANSION_ORDER];
@@ -18,15 +21,15 @@ public:
     void comp_S();
     void comp_F();
 private:
-    void h(idx_t &k1, idx_t &k2);
-    void J(idx_t &k1, idx_t &k2);
-    void K(idx_t &k1, idx_t &k2);
+    void h(GTO_t &k1, GTO_t &k2);
+    void J(GTO_t &k1, GTO_t &k2);
+    void K(GTO_t &k1, GTO_t &k2);
 
     void zero_matrices();
 
-    MatrixXd F;
-    MatrixXd S;
-    MatrixXd C;
+    Eigen::MatrixXd F;
+    Eigen::MatrixXd S;
+    Eigen::MatrixXd C;
 
     std::vector<GTO_t> GTO;
 

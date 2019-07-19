@@ -9,7 +9,7 @@ using namespace Eigen;
 typedef struct {
     uint A; // nucleus number
     // quantum numbers
-    unit n;
+    uint n;
     uint l;
     int m;
 } e_idx_t;
@@ -17,7 +17,7 @@ typedef struct {
 class HartreeFockSolver : public Molecule{
 public:
     HartreeFockSolver() {};
-    HartreeFockSolver(const std::vector<scalarfield_t> &phi);
+    //HartreeFockSolver(const std::vector<scalarfield_t> &phi);
 };
 
 #endif /* end of include guard: HARTREE_FOCK_CPP_H */

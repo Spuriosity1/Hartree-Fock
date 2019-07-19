@@ -1,34 +1,20 @@
 #include "nuclei.hpp"
 
 
-
-Nuclei::Nuclei(){
-    memset(len, 0, sizeof(uint)*NELEM);
-}
-
 Nuclei::Nuclei(const std::string &path){
-    memset(len, 0, sizeof(uint)*NELEM);
     import_from(path);
-}
-
-Nuclei::~Nuclei(){
-    // Odds of this working are exactly zero
-    for (uint Z = 0; Z < NELEM; Z++) {
-        free(nuclei[Z]);
-    }
-    free(nuclei);
 }
 
 // Prints a list of all coordinates of nuclear positions stored in nuclei[]
 void Nuclei::print_nuclei(){
     printf("LIST OF ALL NUCLEAR POSITIONS:\n");
-    for (uint Z = 0; Z < NELEM; Z++) {
-        if (len[Z] != 0){
+    for (uint Z = 0; Z < nuclei.size(); Z++) {
+        if (nuclei[Z].size() != 0){
             printf("Nuclei with Z = %u:\n", Z);
         }
-        for (uint mZ = 0; mZ < len[Z]; mZ++) {
-            double* R = nuclei[Z]+3*mZ;
-            printf("(%lf,%lf,%lf)\n",R[0],R[1],R[2]);
+        for (uint mZ = 0; mZ < nuclei[Z].size(); mZ++) {
+            vector3_t R = nuclei[Z][mZ];
+            printf("(%lf,%lf,%lf)\n",R.v[0],R.v[1],R.v[2]);
         }
     }
 }
@@ -37,13 +23,13 @@ void Nuclei::print_nuclei(){
 void Nuclei::save_as(const std::string &filename){
     std::ofstream outdata;
     outdata.open(filename);
-    for (uint Z = 0; Z < NELEM; Z++) {
-        if (len[Z] != 0){
+    for (uint Z = 0; Z < nuclei.size(); Z++) {
+        if (nuclei[Z].size() != 0){
             outdata<<"Z:"<<Z<<std::endl;
         }
-        for (uint mZ = 0; mZ < len[Z]; mZ++) {
-            double* R = nuclei[Z]+3*mZ;
-            outdata<<R[0]<<" "<<R[1]<<" "<<R[2]<<std::endl;
+        for (uint mZ = 0; mZ < nuclei[Z].size(); mZ++) {
+            vector3_t R = nuclei[Z][mZ];
+            outdata<<R.v[0]<<" "<<R.v[1]<<" "<<R.v[2]<<std::endl;
         }
     }
     outdata.close();
@@ -63,40 +49,31 @@ void Nuclei::import_from(const std::string &path){
 
     std::string line;
     uint lineno = 0;
-    nuclei = (elements_t*) malloc(sizeof(elements_t) * NELEM);
-    memset(nuclei, (int) NULL, NELEM*sizeof(elements_t*));
 
     nelectrons = 0;
     // Structure:
     // nuclei[Z][idx][x,y,z]
-    std::vector<vector3_t> values;
     uint Zval = 0;
-    bool nempty = false;
+    nuclei.resize(1); // Put in a dummy element so the damn thing doesn't
+    // segfault immediately
+
+
     while (getline(indata, line)) {
         lineno++;
-
-        #ifndef NDEBUG
-        fprintf(stderr, "DEBUG: line %u\n",lineno);
-        #endif
-
         if (line[0] == '#'){
             // Ignore comments
             continue;
         } else if (line[0] == 'Z'){
             // New Z value
-            store_vector(Zval,values);
-            nelectrons += Zval*values.size();
-            values.clear();
+            nelectrons += (Zval ==0 ) ? 0 : Zval*nuclei[Zval].size();
             Zval = stoi(line.substr(2));
+            if (nuclei.size() <= Zval){
+                nuclei.resize(Zval+1, std::vector<vector3_t>());
+            }
         } else {
             // Assume we are reading 3 coordinates
-            values.push_back(read_vector3(line));
-            nempty = true;
+            nuclei[Zval].push_back(read_vector3(line));
         }
-    }
-
-    if (nempty){
-        store_vector(Zval,values);
     }
 }
 
@@ -112,7 +89,7 @@ vector3_t Nuclei::read_vector3(std::string line){
 
     while (getline(lineStream, cell, ' ')) {
         if (pos < 3){
-            R.vals[pos] = stod(cell);
+            R.v[pos] = stod(cell);
             ++pos;
         } else {
             fprintf(stderr,"Found extra data!\n");
@@ -121,16 +98,4 @@ vector3_t Nuclei::read_vector3(std::string line){
     }
 
     return R;
-}
-
-// Utility function to allocate and store vector of vector3_t in nuclei
-void Nuclei::store_vector(uint Z, std::vector<vector3_t> &v){
-    nuclei[Z] = (elements_t) malloc(3*v.size()*sizeof(elements_t));
-    len[Z] = v.size();
-
-    for (uint mZ = 0; mZ < v.size(); mZ++) {
-        for (size_t j = 0; j < 3; j++) {
-            nuclei[Z][3*mZ+j] = v[mZ].vals[j];
-        }
-    }
 }

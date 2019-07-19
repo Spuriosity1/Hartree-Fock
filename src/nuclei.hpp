@@ -21,25 +21,22 @@ Z:12\n\
 
 // Wrapper for convenience
 typedef struct {
-    double vals[3];
+    double v[3];
 } vector3_t;
 
 class Nuclei{
 public:
-    Nuclei();
+    Nuclei() {};
     Nuclei(const std::string &path);
-    ~Nuclei();
     void import_from(const std::string &path);
     void print_nuclei();
     uint nelectrons;
     void save_as(const std::string &path);
 private:
-    void store_vector(uint Z, std::vector<vector3_t> &v);
     vector3_t read_vector3(std::string line);
 protected:
     std::vector<std::vector<vector3_t>> nuclei;
     const static uint NELEM = 100;
-    uint len[100];
 };
 
 #endif
