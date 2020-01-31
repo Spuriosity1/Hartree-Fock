@@ -104,7 +104,7 @@ void Molecule::comp_S(){
 
             GTO_t B1 = GTO[mu];
             GTO_t B2 = GTO[nu];
-            
+
             for (size_t s = 0; s < GTO_EXPANSION_ORDER; s++) {
                 for (size_t t = 0; t < GTO_EXPANSION_ORDER; t++) {
                     /* code */

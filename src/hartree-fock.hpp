@@ -6,18 +6,10 @@
 #include "molecule.hpp"
 using namespace Eigen;
 
-typedef struct {
-    uint A; // nucleus number
-    // quantum numbers
-    uint n;
-    uint l;
-    int m;
-} e_idx_t;
-
 class HartreeFockSolver : public Molecule{
 public:
     HartreeFockSolver() {};
-    //HartreeFockSolver(const std::vector<scalarfield_t> &phi);
+    void solve();
 };
 
 #endif /* end of include guard: HARTREE_FOCK_CPP_H */

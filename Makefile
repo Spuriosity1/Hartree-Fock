@@ -11,7 +11,7 @@ SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g -Wall -std=c++11
 LIB := -L lib
-INC := -I include /usr/local/Cellar/nlohmann-json/3.6.1/include
+INC := -I include /usr/local/Cellar/nlohmann-json/*/include
 
 $(TARGET): $(OBJECTS)
 	@echo " Linking..."

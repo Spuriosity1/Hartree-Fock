@@ -20,11 +20,11 @@ N.B. K is an operator, not a number in the above expression!
 
 
 
-// HartreeFockSolver::HartreeFockSolver (const std::vector<scalarfield_t> &phi){
-//
-// }
+void HartreeFockSolver::solve(){
+    Eigen::GeneralizedSelfAdjointEigenSolver<MatrixXd> es;
+    comp_S();
+    while (Delta > max_toletance){
+        comp_F();
+    }
 
-
-// void HartreeFockSolver::solve(const MatrixXd&phi , const Ref<const ArrayXXd> U){
-//     Eigen::GeneralizedSelfAdjointEigenSolver<MatrixXd> es;
-// }
+}
